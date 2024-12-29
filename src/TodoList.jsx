@@ -11,7 +11,7 @@ const TodoList = () => {
   // Fetch tasks from the backend
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/tasks")
+      .get("http://18.118.48.128:8080/api/tasks")
       .then((response) => {
         setTasks(response.data || []); // Fallback to an empty array if response.data is null
       })
@@ -23,7 +23,7 @@ const TodoList = () => {
     e.preventDefault();
     const newTask = { name: editName, description: editDescription, completed: false };
     axios
-      .post("http://localhost:8080/api/tasks", newTask)
+      .post("http://18.118.48.128:8080/api/tasks", newTask)
       .then((response) => {
         setTasks([...tasks, response.data]);
         setEditName("");
@@ -35,7 +35,7 @@ const TodoList = () => {
   // Delete a task
   const handleDeleteTask = (id) => {
     axios
-      .delete(`http://localhost:8080/api/tasks/${id}`)
+      .delete(`http://18.118.48.128:8080/api/tasks/${id}`)
       .then(() => setTasks(tasks.filter((task) => task.id !== id)))
       .catch((error) => console.error("Error deleting task:", error));
   };
@@ -45,7 +45,7 @@ const TodoList = () => {
     const updatedTask = tasks.find((task) => task.id === id);
     updatedTask.completed = true;
     axios
-      .put(`http://localhost:8080/api/tasks/${id}/complete`, updatedTask)
+      .put(`http://18.118.48.128:8080/api/tasks/${id}/complete`, updatedTask)
       .then(() => {
         setTasks(tasks.map((task) => (task.id === id ? updatedTask : task)));
       })
@@ -63,7 +63,7 @@ const TodoList = () => {
   const handleSaveTask = (id) => {
     const updatedTask = { name: editName, description: editDescription };
     axios
-      .put(`http://localhost:8080/api/tasks/${id}`, updatedTask)
+      .put(`http://18.118.48.128:8080/api/tasks/${id}`, updatedTask)
       .then((response) => {
         setTasks(tasks.map((task) => (task.id === id ? response.data : task)));
         setEditingTaskId(null); // Exit edit mode
