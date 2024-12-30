@@ -36,8 +36,22 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         source: dist/
         target: /home/ec2-user/dist/
+        rm: true
 
-    # Step 5: Restart Nginx (optional, if needed)
+    # Step 5: Configure permissions
+    - name: Configure Permissions
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          sudo chown -R ec2-user:nginx /home/ec2-user/dist
+          sudo chmod -R 755 /home/ec2-user/dist
+          sudo semanage fcontext -a -t httpd_sys_content_t "/home/ec2-user/dist(/.*)?"
+          sudo restorecon -R /home/ec2-user/dist
+
+    # Step 6: Restart Nginx
     - name: Restart Nginx
       uses: appleboy/ssh-action@v0.1.5
       with:
