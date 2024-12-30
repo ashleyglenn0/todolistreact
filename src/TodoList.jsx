@@ -73,8 +73,8 @@ const TodoList = () => {
 
   return (
     <div className="container">
-      <h1>Welcome to the To-Do List!</h1>
-      <h2>Enter your tasks below: </h2>
+      <h1>Welcome to the To-Do List</h1>
+      <h2>Enter your tasks: </h2>
       <form onSubmit={handleAddTask} className="task-form">
         <input
           type="text"
