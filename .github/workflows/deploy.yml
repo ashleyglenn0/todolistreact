@@ -27,8 +27,17 @@ jobs:
     - name: Build the frontend
       run: npm run build
 
-    # Step 4: Deploy the build folder to EC2
+    # Step 4: Clean and Deploy to EC2
     - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          sudo rm -rf /home/ec2-user/dist
+          mkdir -p /home/ec2-user/dist
+    - name: Copy Build Files to EC2
       uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -36,9 +45,8 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         source: dist/
         target: /home/ec2-user/dist/
-        rm: true
 
-    # Step 5: Configure permissions
+    # Step 5: Configure Permissions
     - name: Configure Permissions
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -60,3 +68,16 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           sudo systemctl restart nginx
+
+    # Step 7: Debugging (optional)
+    - name: Debugging
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          echo "Listing /home/ec2-user directory:"
+          ls -l /home/ec2-user
+          echo "Listing /home/ec2-user/dist directory:"
+          ls -l /home/ec2-user/dist
